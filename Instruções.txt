@@ -1,0 +1,1 @@
+para executar o projeto digite "pnpm install" no terminal e depois "pnpm start"

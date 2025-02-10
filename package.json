@@ -1,0 +1,44 @@
+{
+  "name": "projeto-backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "node --import=tsx --env-file=.env .",
+    "dev": "node --watch --import=tsx --env-file=.env.local ."
+  },
+  "keywords": [],
+  "contributors": [
+    {
+      "name": "Fábio Milagres",
+      "url": "https://github.com/wfabi0"
+    },
+    {
+      "name": "Lucas Rocha Ferreira",
+      "url": "https://github.com/DraconiicDragon"
+    }
+  ],
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=v22.12.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mysql2": "^3.12.0",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
+    "@types/node": "^22.10.5",
+    "@types/sequelize": "^4.28.20",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

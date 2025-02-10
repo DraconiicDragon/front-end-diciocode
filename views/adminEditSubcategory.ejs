@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DicioCode</title>
+    <link rel="icon" type="image/x-icon" href="/public/assets/icons/tatu_icon05.png">
+    <link rel="stylesheet" href="/public/assets/stylesheets/admin.css">
+</head>
+<body>
+    <aside>
+        <header>
+            <h1>
+                <a href="/"><img src="/public/assets/icons/tatu_icon05.png" alt="">DicioCode</a>
+            </h1>          
+            <a href="/users/id/1">Perfil</a>          
+        </header>
+        <hr>
+        <nav>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <hr>
+                <li><a href="/admin">Página de Administração</a></li>
+                <hr>
+                <li><a href="/category">Cursos</a></li>
+                <hr>
+                <li><a href="/words">Palavras</a></li>
+                <hr>
+                <li><a href="/auth/logout">Sair</a></li>                   
+            </ul>
+        </nav>
+    </aside>
+    <div id="main">
+        <main>
+            <div>
+                <h1 id="title">Titulo</h1>
+                <form action="">
+                    <input type="text" id="name" placeholder="Nome">
+                    <textarea id="description" placeholder="Descrição"></textarea>
+                    <select id="category-select"></select>
+                    <div>
+                        <button id="button-save">Salvar</button>
+                        <button id="button-cancel">Cancelar</button>
+                    </div>
+                </form>
+                <hr>
+                <div id="words-subcategory">
+                    <h1>Palavras cadastradas nessa subcategoria</h1>
+                    <select id="words-select"></select>
+                    <button id="button-add-word">Adicionar</button>
+                    <table>
+                        <thead>
+                            <th>Id</th>
+                            <th>Inglês</th>
+                            <th>Português</th>
+                            <th></th>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident, quis repudiandae animi perspiciatis corporis, repellendus deleniti unde at reiciendis illum ducimus impedit velit. Fugit veniam libero suscipit dolorem vel ipsum? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate veniam fugiat recusandae iusto, quasi quaerat temporibus. Fugit molestias alias reiciendis deserunt cumque inventore? Error, asperiores? Nulla incidunt aliquam odio dicta? Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fuga eveniet, magni architecto eius vel id, cumque earum quas dolor, magnam nostrum possimus suscipit molestiae dignissimos debitis quibusdam culpa voluptates.</p>
+            </div>
+            <div class="informacoes">
+                <h1>Informações</h1>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+            </div>
+            <div>
+                <h1>Contate-nos</h1>
+                <p>Rua, Número - Bairro, Cidade - CEP</p>
+                <p>Telefone: (33) 1111-2222</p>
+                <p>Email:<a href="mailto:exemplo@email.com">exemplo@gmail.com</a></p>
+            </div>
+            <div>
+                <h1>Siga-nos</h1>
+                <a href="twitter.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt=""></a>
+                <a href="facebook.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/256/124/124010.png" alt=""></a>
+                <a href="instagram.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt=""></a>
+                <a href="youtube.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt=""></a>
+            </div>
+        </footer>
+    </div>
+</body>
+<script>
+    function updatePage() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const name = params.get("name");
+        const description = params.get("description");
+              
+        getCategories();
+        if(!id) {
+            document.getElementById("title").innerHTML = "Criar Subcategoria";
+            document.getElementById("words-subcategory").hidden = true;
+            return;
+        }
+        getWords();
+        getWordsBySubcategoryId(id); 
+        document.getElementById("title").innerHTML = "Editar Subcategoria";
+        document.getElementById("name").value = name;
+        document.getElementById("description").value = description;
+    }
+
+    async function getCategories() {
+        const params = new URLSearchParams(window.location.search);
+        const id_category = params.get("id_category");
+        const request = new Request("/category/all");
+        const response = await fetch(request);
+        if(response.ok) {
+            const result = await response.json();
+            const select = document.getElementById("category-select");
+            for(let i = 0; i < result.categories.length; i++) {
+                const option = document.createElement("option");
+                option.value = result.categories[i].id_category;
+                option.innerHTML = result.categories[i].name;
+                select.append(option);
+                if(option.value == id_category) {
+                    select.selectedIndex = i;
+                }
+            }
+        }
+    }
+
+    async function buttonSave() {
+        event.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const name = document.getElementById("name").value;
+        const description = document.getElementById("description").value;
+        const id_category = document.getElementById("category-select").value;
+        let request;
+        if(!id) {
+            request = new Request("/subcategory", {
+                method: "POST",
+                body: JSON.stringify({ name: name, description: description, id_category: id_category})
+            });         
+        } else {
+            request = new Request("/subcategory", {
+                method: "PATCH",
+                body: JSON.stringify({ id: id, name: name, description: description, id_category: id_category})
+            });
+        }
+        const response = await fetch(request);
+        if(response.ok) {
+            window.location.replace("/admin/subcategories");
+        }
+    }
+
+    function buttonCancel(event) {
+        event.preventDefault();
+        history.back();
+    }
+
+    async function buttonAddWord(event) {
+        event.preventDefault();
+        const selected = document.getElementById("words-select");
+        const selected_word = selected.options[selected.selectedIndex];
+
+        const id_word = selected_word.value;
+        const word_english = selected_word.innerHTML;
+        const word_portuguese = selected_word.getAttribute("portuguese");
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const request = new Request("/subcategory/words", {
+            method: "POST",
+            body: JSON.stringify({ id_word: id_word, id_subcategory: id })
+        });
+        const response = await fetch(request);
+        const result = await response.json();
+        if(response.ok) {
+            loadTable({id_word: id_word, word_english: word_english, word_portuguese: word_portuguese}, result.result.id_wordSubcategory);
+        }
+    }
+
+    async function getWords() {
+        const request = new Request("/words/all");
+        const response = await fetch(request);
+        if(response.ok) {
+            const select = document.getElementById("words-select");
+            const result = await response.json();
+            for(let i = 0; i < result.words.length; i++) {
+                const option = document.createElement("option");
+                option.value = result.words[i].id_word;
+                option.innerHTML = result.words[i].word_english;
+                option.setAttribute("portuguese", result.words[i].word_portuguese);
+                select.append(option);
+            }
+        }
+    }
+
+    async function getWordsBySubcategoryId(id) {
+        const request = new Request("/subcategory/words/"+id);
+        const response = await fetch(request);
+        if(response.ok) {
+            getWordsId(response);
+        }
+    }
+
+    async function getWordsId(response) {
+        const result = await response.json();
+        for(let i = 0; i < result.words.length; i++) {
+            const request = new Request("/words/id/"+result.words[i].id_word);            
+            const newResponse = await fetch(request);
+            if(newResponse.ok) {
+                const newResult = await newResponse.json();
+                const id = result.words[i].id_wordSubcategory;
+                loadTable(newResult.word, id); 
+            }          
+        }
+    }
+
+    async function loadTable(words, idWordSubcategory) {
+        const tbody = document.getElementById("table-body");
+        const id = document.createElement("td");
+        id.innerHTML = words.id_word;
+        id.id = idWordSubcategory;
+
+        const english = document.createElement("td");
+        english.innerHTML = words.word_english;
+
+        const portuguese = document.createElement("td");
+        portuguese.innerHTML = words.word_portuguese;
+
+        const deleteButton = document.createElement("a");
+        deleteButton.href="";
+        deleteButton.addEventListener("click", deleteLink);
+        const deleteImage = document.createElement("img");
+        deleteImage.src="https://cdn-icons-png.freepik.com/512/1345/1345874.png";
+        deleteButton.append(deleteImage);
+
+        const action = document.createElement("td");
+        action.append(deleteButton);  
+
+        const tr = document.createElement("tr");
+        tr.append(id, english, portuguese, action);
+
+        tbody.append(tr);
+    }
+
+    async function deleteLink(event) {
+        event.preventDefault();
+        if(window.confirm("Remover palavra da subcategoria?")) {
+            const request = new Request("/subcategory/words/"+event.target.parentNode.parentNode.parentNode.firstChild.id, {
+                method: "DELETE"
+            });
+            const response = await fetch(request);
+            if(response.ok) {                
+                event.target.parentNode.parentNode.parentNode.remove();
+            }
+        }
+    }
+
+    document.getElementById("button-cancel").addEventListener("click", buttonCancel);
+    document.getElementById("button-save").addEventListener("click", buttonSave);
+    document.getElementById("button-add-word").addEventListener("click", buttonAddWord);
+    window.addEventListener("load", updatePage);
+</script>
+</html>

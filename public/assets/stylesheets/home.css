@@ -1,0 +1,57 @@
+@import "style.css";
+@import "sidebar-style.css";
+
+* {
+    margin: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+}
+
+#main {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+main a {
+    color: var(--footer-color);
+}
+
+footer img {
+    width: 20px;
+}
+
+footer div {
+    flex-basis: 25%;
+    margin: 10px;
+    padding: 10px;
+}
+
+footer a:hover {
+    color: var(--sidebar-color);
+}
+
+footer a {
+    color: var(--white-text);
+    margin: 10px;
+}
+
+.informacoes {
+    display: grid;
+}
+
+footer {
+    display: flex;
+    color: var(--white-text);
+    background-color: var(--footer-color);
+}

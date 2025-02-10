@@ -1,0 +1,116 @@
+@import "style.css";
+@import "sidebar-style.css";
+
+* {
+    margin: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+}
+
+#main {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#main img {
+    width: 15px;
+}
+
+#main form {
+    display: grid;
+}
+
+textarea {
+    margin-bottom: 10px;
+    height: 100px;
+    width: 500px;
+    border: 0px;
+}
+
+form input {
+    width: 500px;
+    border: 0px;
+}
+
+form button {
+    width: 100px;
+}
+
+form div {
+    padding: 0;
+}
+form select {
+    width: 100px;
+}
+
+#words-subcategory {
+    padding: 0;
+}
+
+#words-subcategory table {
+    margin-top: 10px;
+}
+
+table {
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+input {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+main {
+    flex-basis: 100%;
+    display: block;
+    margin: 30px;
+}
+
+main div {
+    padding: 20px;
+    background-color: var(--white-text);
+    border-radius: 10px;
+}
+
+main li {
+    padding: 12px;
+}
+
+main a {
+    color: var(--footer-color);
+    text-decoration: none;
+}
+
+footer img {
+    width: 20px;
+}
+
+footer div {
+    flex-basis: 25%;
+    margin: 10px;
+    padding: 10px;
+}
+
+footer a:hover {
+    color: var(--sidebar-color);
+}
+
+footer a {
+    color: var(--white-text);
+    margin: 10px;
+}
+
+.informacoes {
+    display: grid;
+}
+
+footer {
+    display: flex;
+    color: var(--white-text);
+    background-color: var(--footer-color);
+}

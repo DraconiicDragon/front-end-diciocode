@@ -1,0 +1,26 @@
+aside {
+    flex-basis: 15%;
+    background-color: var(--sidebar-color);  
+    height: 100vh;
+    padding: 10px;
+}
+aside a {
+    color: var(--white-text);
+    text-decoration: none;
+}
+aside a:hover {
+    background-color: var(--dark-purple-text);
+}
+aside li {
+    color: var(--white-text);
+    padding: 10px;
+}
+aside ul {
+    text-decoration: none;
+}
+aside img {
+    width: 4vh;
+}
+aside h1 {  
+    padding-bottom: 20px;
+}

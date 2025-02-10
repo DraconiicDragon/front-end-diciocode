@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <h1>Subcategoria</h1>
+        <h2>descrição</h2>
+        <div id="words-list">
+        </div>
+    </main>
+</body>
+<script>
+    async function updateNames() {
+        
+    }
+
+    async function getWords() {
+        const params = new URLSearchParams(window.location.search);
+        const id_subcategory = params.get("id");
+        
+        const request = new Request("/subcategory/words/"+id_subcategory);
+        const response = await fetch(request);
+        if(response.ok) {
+            const words = await response.json();
+            const ul = document.createElement("ul");
+            for(let i = 0; i < words.words.length; i++) {                   
+                const word = await getWordById(words.words[i].id_word);
+                const audio_normal = await getAudiosById(word.id_audio_normal);
+                const audio_slowed = await getAudiosById(word.id_audio_slowed);
+
+                const wordName = document.createElement("h3");
+                wordName.innerHTML = word.word_english;
+
+                const wordPt = document.createElement("h4");
+                wordPt.innerHTML = word.word_portuguese;
+
+                const audioNormal = document.createElement("h4");
+                audioNormal.innerHTML = audio_normal.path;
+
+                const audioSlowed = document.createElement("h4");
+                audioSlowed.innerHTML = audio_slowed.path;
+
+                const li = document.createElement("li");
+                li.append(wordName);
+                li.append(wordPt);
+                li.append(audioNormal);
+                li.append(audioSlowed);
+                ul.append(li);
+            }
+            document.getElementById("words-list").append(ul);
+        }
+    }
+    async function getWordById(id) {
+        const request = new Request("/words/id/"+id);
+        const response = await fetch(request);
+        if(response.ok) {
+            const word = await response.json();
+            return word.word;
+        }
+    }
+    async function getAudiosById(id) {
+        const request = new Request("/audios/id/"+id);
+        const response = await fetch(request);
+        if(response.ok) {
+            const audio = await response.json();
+            return audio.audio;
+        }
+    }
+    window.addEventListener("load", getWords);
+</script>
+</html>

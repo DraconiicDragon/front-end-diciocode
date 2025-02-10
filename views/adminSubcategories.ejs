@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DicioCode</title>
+    <link rel="icon" type="image/x-icon" href="/public/assets/icons/tatu_icon05.png">
+    <link rel="stylesheet" href="/public/assets/stylesheets/admin.css">
+</head>
+<body>
+    <aside>
+        <header>
+            <h1>
+                <a href="/"><img src="/public/assets/icons/tatu_icon05.png" alt="">DicioCode</a>
+            </h1>          
+            <a href="/users/id/1">Perfil</a>          
+        </header>
+        <hr>
+        <nav>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <hr>
+                <li><a href="/admin">Página de Administração</a></li>
+                <hr>
+                <li><a href="/category">Cursos</a></li>
+                <hr>
+                <li><a href="/words">Palavras</a></li>
+                <hr>
+                <li><a href="/auth/logout">Sair</a></li>                   
+            </ul>
+        </nav>
+    </aside>
+    <div id="main">
+        <main>
+            <div>
+                <h1>Gerenciar Subcategorias</h1>
+                <a href="/admin/subcategory"><img src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="">Nova Subcategoria</a>
+                <hr>  
+                <input type="text" id="search-bar" placeholder="Pesquisar">
+                <table>
+                    <thead>
+                        <th>Id</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th></th>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <footer>
+            <div>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident, quis repudiandae animi perspiciatis corporis, repellendus deleniti unde at reiciendis illum ducimus impedit velit. Fugit veniam libero suscipit dolorem vel ipsum? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate veniam fugiat recusandae iusto, quasi quaerat temporibus. Fugit molestias alias reiciendis deserunt cumque inventore? Error, asperiores? Nulla incidunt aliquam odio dicta? Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fuga eveniet, magni architecto eius vel id, cumque earum quas dolor, magnam nostrum possimus suscipit molestiae dignissimos debitis quibusdam culpa voluptates.</p>
+            </div>
+            <div class="informacoes">
+                <h1>Informações</h1>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+                <a href="google.com">Link Exemplo</a>
+            </div>
+            <div>
+                <h1>Contate-nos</h1>
+                <p>Rua, Número - Bairro, Cidade - CEP</p>
+                <p>Telefone: (33) 1111-2222</p>
+                <p>Email:<a href="mailto:exemplo@email.com">exemplo@gmail.com</a></p>
+            </div>
+            <div>
+                <h1>Siga-nos</h1>
+                <a href="twitter.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt=""></a>
+                <a href="facebook.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/256/124/124010.png" alt=""></a>
+                <a href="instagram.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt=""></a>
+                <a href="youtube.com"><img class="footer-img-link" src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt=""></a>
+            </div>
+        </footer>
+    </div>  
+</body>
+<script>
+    async function getAll() {
+        const request = new Request("/subcategory/all");
+        const response = await fetch(request);
+        if(response.ok) {
+            loadTable(response);
+        }
+    }
+
+    async function search(event) {
+        if(event.target.value == "") {
+            getAll();
+            return;
+        }
+        getByName(event.target.value);
+    }
+
+    async function getByName(name) {
+        const request = new Request("/subcategory/name/"+name);
+        const response = await fetch(request);
+        if(response.ok) {
+            loadTable(response);
+        }
+    }
+
+    async function loadTable(response) {
+        const result = await response.json();
+        const tbody = document.getElementById("table-body");
+        tbody.innerHTML = "";
+        for(let i = 0; i < result.subcategories.length; i++) {
+            const id = document.createElement("td");
+            id.innerHTML = result.subcategories[i].id_subcategory;
+
+            const name = document.createElement("td");
+            name.innerHTML = result.subcategories[i].name;
+
+            const description = document.createElement("td");
+            description.innerHTML = result.subcategories[i].description;
+
+            const categoryResult = await getCategory(result.subcategories[i].id_category);
+            const category = document.createElement("td");
+            category.innerHTML = categoryResult.name;
+            category.id = categoryResult.id_category;
+            
+            const editButton = document.createElement("a");
+            editButton.href="";
+            editButton.addEventListener("click", editLink);
+            const editImg = document.createElement("img");
+            editImg.src="https://static-00.iconduck.com/assets.00/edit-icon-2048x2048-6svwfwto.png";
+            editButton.append(editImg);
+
+            const deleteButton = document.createElement("a");
+            deleteButton.href="";
+            deleteButton.addEventListener("click", deleteLink);
+            const deleteImage = document.createElement("img");
+            deleteImage.src="https://cdn-icons-png.freepik.com/512/1345/1345874.png";
+            deleteButton.append(deleteImage);
+
+            const action = document.createElement("td");
+            action.append(editButton, deleteButton);  
+
+            const tr = document.createElement("tr");
+            tr.append(id, name, description, category, action);
+
+            tbody.append(tr);
+        }
+    }
+
+    async function editLink(event) {
+        event.preventDefault();
+        const tr = event.target.parentNode.parentNode.parentNode.children;
+        window.location.href = "/admin/subcategory?id="+tr[0].innerHTML+"&name="+tr[1].innerHTML+"&description="+tr[2].innerHTML+"&id_category="+tr[3].id;
+    }
+
+    async function deleteLink(event) {
+        event.preventDefault();
+        if(window.confirm("Deletar Subcategoria?")) {
+            const request = new Request("/subcategory/"+event.target.parentNode.parentNode.parentNode.firstChild.innerHTML, {
+                method: "DELETE",
+            });
+            const response = await fetch(request);
+            if(response.ok) {
+                event.target.parentNode.parentNode.parentNode.remove();
+            }
+        }
+    }
+
+    async function getCategory(id) {
+        const request = new Request("/category/id/"+id);
+        const response = await fetch(request);
+        if(response.ok) {
+            const result = await response.json();
+            return result.category;
+        }
+        return "";
+    }
+    window.addEventListener("load", getAll);
+    document.getElementById("search-bar").addEventListener("input", search);
+</script>
+</html>

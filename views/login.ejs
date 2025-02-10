@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DicioCode</title>
+    <link rel="icon" type="image/x-icon" href="/public/assets/icons/tatu_icon05.png">
+    <link rel="stylesheet" href="/public/assets/stylesheets/login.css">
+</head>
+<body>
+    <main>
+        <h2>Dicio Code</h2>
+        <h3">Login</h3>
+        <form action="">           
+            <input type="text" id="username" placeholder="Digite seu usuário ou email" required>
+            <input type="password" id="password" placeholder="Digite sua senha" required>
+            <button id="login-button">Acessar</button>
+        </form>
+        <p id="response"></p>
+        <a href="/auth/register">Criar Conta</a>
+    </main>
+</body>
+<script>
+    async function sendLoginInformation(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        try {
+            const request = new Request("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({ auth: "admin", password: "admin" }),
+            });
+            const response = await fetch(request);
+            if(response.ok) {
+                window.location.replace("/");
+                return;
+            } 
+            if(response.status == 401) {
+                document.getElementById("response").innerHTML = "Usuário ou senha incorretos";
+                return;
+            }    
+        } catch (error) {
+            console.log("Erro fatal");
+        }
+    }
+
+    document.getElementById("login-button").addEventListener("click", sendLoginInformation);
+    </script>
+</html>
